@@ -1,0 +1,459 @@
+Aws Security:
+----------------
+
+
+VPC Security Best Prcatices in AWS:
+---------------------------------------------------
+
+Amazon Virtual Private Cloud (VPC) is a foundational service in Amazon Web Services (AWS) that allows you to create isolated network environments in the cloud. VPC provides several security features to help you secure your resources and data within your virtual network. Some of the key security features provided by AWS VPC include:
+
+1. Network Isolation:
+-----------------------------
+VPC enables you to create isolated virtual networks, allowing you to logically separate your resources. This isolation helps prevent unauthorized access and data leakage.
+
+2. Subnet Configuration:
+---------------------------------
+VPC allows you to divide your VPC into subnets, which can be public or private. Public subnets can have resources with direct internet access, while private subnets keep resources isolated from the internet.
+
+3. Route Tables:
+-------------------
+You can control the flow of traffic in and out of your VPC using route tables. 
+
+4. Security Groups:
+----------------------
+Security groups act as virtual firewalls at the instance level. You can define inbound and outbound rules to control traffic to and from instances. Security groups are stateful, meaning if you allow inbound traffic, the corresponding outbound traffic is automatically allowed.
+
+5. Network Access Control Lists (NACLs):
+--------------------------------------------------------
+NACLs are stateless and operate at the subnet level. They provide additional control over inbound and outbound traffic by allowing you to create rules that define what traffic is allowed or denied. Since these are stateless, if you allow inbound traffic, you must also allow corresponding outbound traffic on ephemeral ports
+
+6. Network Flow Logs:
+---------------------------
+VPC Flow Logs capture information about the IP traffic going to and from network interfaces in your VPC. This helps in monitoring and troubleshooting network issues and can aid in detecting unauthorized access attempts.
+
+7. VPC Peering:
+---------------------
+VPC peering enables you to connect VPCs together and route traffic between them privately, without going over the internet. This can be used to share resources securely between VPCs.
+
+
+9. VPN and Direct Connect:
+--------------------------------------
+ VPC supports both Virtual Private Network (VPN) connections and AWS Direct Connect, providing secure methods for connecting your on-premises infrastructure to your VPC.
+
+10. MACsec:
+-----------------
+MACsec protocol is designed to provide authentication, confidentiality and integrity for data transported on point-to-point links. MACsec operates at line-rate and can scale from megabits to terabits per second. With the release of MACsec support, you can now use AWS Direct Connect with MACsec to encrypt your data from your corporate data center to the AWS Direct Connect location. This solution eliminates the need for running VPN tunnel inside Direct Connect to encrypt data. 
+
+11. VPC Endpoint:
+-------------------------
+VPC endpoints enable you to privately connect your VPC to supported AWS services without requiring an internet gateway, NAT gateway, or VPN connection. 
+
+12. Multi-AZ Redundancy:
+-------------------------------------
+By deploying resources across multiple availability zones (AZs) within a VPC, you can enhance high availability and disaster recovery capabilities.
+
+
+13. VPC Traffic Mirroring:
+----------------------------------
+VPC Traffic Mirroring allows you to capture and inspect network traffic at the Elastic Network Interface (ENI) level. With this feature, you can mirror traffic from one or more network interfaces to another for monitoring and analysis purposes. This is particularly useful for intrusion detection, network forensics, and troubleshooting security issues.
+
+
+14. AWS Network Firewall:
+----------------------------------
+AWS Network Firewall is a managed intrusion prevention system (IPS) that integrates seamlessly with AWS VPC to provide an additional layer of network security. It enables you to inspect and control the incoming and outgoing traffic at the application, network, and protocol layers. With Network Firewall, you can create and enforce granular firewall rules to permit or deny specific types of traffic based on protocols, domains, IP addresses, and more.
+
+
+15. AWS Transit Gateway:
+-------------------------------------
+AWS Transit Gateway acts as a central hub that allows you to interconnect VPCs and route traffic between them, while also enabling.
+
+
+16. Route 53 Resolver DNS Firewall:
+-----------------------------------------------
+With Route 53 Resolver DNS Firewall, you can filter and regulate outbound DNS traffic for your virtual private cloud (VPC). DNS Firewall provides protection for outbound DNS requests from your VPCs. These requests route through Resolver for domain name resolution. A primary use of DNS Firewall protections is to help prevent DNS exfiltration of your data. DNS exfiltration can happen when a bad actor compromises an application instance in your VPC and then uses DNS lookup to send data out of the VPC to a domain that they control. With DNS Firewall, you can monitor and control the domains that your applications can query. You can deny access to the domains that you know to be bad and allow all other queries to pass through. Alternately, you can deny access to all domains except for the ones that you explicitly trust.
+
+
+17. Resource Access Manager (RAM):
+-----------------------------------------------
+With a Resource Access Manager, you can share your centrallymanaged VPC with other accounts in the organization. 
+
+
+Subnets:
+---------- 
+You can share subnets across accounts using RAM. This can be useful in scenarios where you want to allow another AWS account to launch resources, such as instances or Lambda functions, into specific subnets of your VPC. When sharing subnets across accounts, you must use the Availability Zone ID (AZ ID) to consistently refer to an Availability Zone. Availability Zone IDs are unique identifiers assigned to each Availability Zone within a region.
+
+
+Availability Zone versus Availability Zone ID: 
+-------------------------------------------------------------
+In AWS, each account has its own distinct mapping of Availability Zone names to physical locations. For instance, the Availability Zone 'us-east-1a' in your AWS account may not correspond to the same physical location as 'us-east-1a' in another AWS account. This divergence can introduce new failure scenarios when sharing networking components such as Subnets across accounts. To ensure consistent reference to the same physical site in cross-account scenarios, it's vital to utilize the Availability Zone ID. An Availability Zone ID serves as a unique identifier for a specific physical location. For instance, 'use1-az1' is the AZ ID for one of the Availability Zones within the us-east1 Region. When 'use1-az1' is referenced across different accounts, it consistently points to the exact same physical location.
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+EKS Security Best parctices in AWS
+----------------------------------------------------
+How do you solve a problem like containers?
+
+The shared responsibility model
+
+Best practices
+
+*Hosts
+
+*Container images Pod and runtime
+
+*Auditing and forensics
+
+*Compliance
+
+*Network
+
+Challenges posed by containers:
+------------------------------------
+
+Processes running on a shared kernel
+
+Isolation implemented by Linux namespaces and cgroups
+
+Short lifespans
+
+Traditional/legacy security software is rarely container aware
+
+*Firewalls
+
+*Intrusion detection system (IDS) / Intrusion prevention system (IPS)
+
+*Data loss prevention (DLP)
+
+*Forensics
+
+Eks shared responsibility model:
+---------------------------------------
+*Aws is responsible to manage EKS control plane(master node)
+*Consumers is responsible for managing the worker nodes.
+
+Defense in Depth:
+--------------------
+Container security model:
+                    
+           Host--->Container--->Dependencies--->Source code--->Configuration--->User data
+
+Host Security:
+----------------
+
+Use an OS that is optimized for running containers
+
+* EKS-optimized AL2 or Bottlerocket
+
+
+*Atomic, Flatcar Linux, RancherOS
+
+Deploy workers onto private subnets
+
+Minimize and audit host access
+
+*AWS Systems Manager, Session Manager
+
+
+Run Amazon Inspector to continually assess alignment with best practices and compliance requirements
+
+* kube-bench
+
+* EKS CIS benchmarks
+
+Use SELinux (RHEL and CentOS)
+
+*Audit2Allow, Audit2Why, SEAlert
+
+
+Image security:
+-------------------------
+
+Scan container images
+
+Elastic Container Registry (ECR), Anchore, Clair, Trivy
+
+Use Scratch, distroless, or a slim base layer
+
+De-fang your images
+
+Remove files with the SETUID and SETGID bits from the image
+
+Always run as a non-root user
+
+* Lint your Dockerfiles
+
+Use endpoint policies and private endpoints with ECR
+
+
+RUN find / -xdev -perm /6000 -type  f -exec chmod a-s {} \; || true
+
+
+Identity and Access Management (IAM):
+------------------------------------------------------
+
+General guidelines:
+
+
+*Practice the principle of least privilege for AWS IAM and Kubernetes Role Based Access Controls (RBACS)
+
+*Configure EKS cluster endpoint to be private
+
+*Periodically audit access to the cluster
+
+IAM:
+
+*Use IAM roles for service accounts (IRSAs) to assign AWS identities to pods
+
+*Block access to EC2 metadata 
+
+Kubernetes:
+
+*Use separate services accounts for each application
+
+*Disable mounting of the default service account (SA) token
+
+
+Pod and runtime security:
+---------------------------------------
+
+Use pod security policies (PSPs) or Open Policy Agent with Gatekeeper to implement runtime security measures
+
+*Deny privileged escalation
+
+*Deny running as root
+
+*Deny mounting hostPath
+
+*Drop Linux capabilities
+
+Complement PSPs with AppArmor or Seccomp profiles
+
+Use third-party solutions
+
+* Aqua, Stackrox, Sysdig Falco, Twistlock
+
+
+Auditing and forensics:
+--------------------------------
+
+Enable control plane logs
+
+Stream logs from containers to an external log aggregator
+
+Periodically audit Kubernetes control plane and AWS CloudTrail logs for suspicious activity
+
+*Search for the annotations authorization.k8s.io/decision and authorization.k8s.io/reason to ascertain why a call was allowed / denied
+
+
+Immediately isolate pods you suspect have been compromised
+
+*Remove / change labels
+
+*Create network policy to isolate the pod
+
+*kube-forensics
+
+Cordon the instance (if necessary)
+
+*Capture volatile artifacts on the worker node, e.g., memory, disk, etc.
+
+
+Network security:
+------------------------
+
+Allowing all traffic is the default policy
+
+Use k8s network policies for restricting East / West traffic within the cluster
+
+Start with a deny-all global policy and incrementally add policies
+
+*Port 53 domain name system (DNS) egress to kube-system
+
+*Allow all within a namespace
+
+Restrict outbound traffic from pods that do not need to connect to external services
+
+*Security groups for pods and cilium (L7 policies)
+
+Encrypt service-to-services traffic with a mesh
+
+* Alternatives: Select Container Networking Interface (CNI) plug-ins and Nitro instances
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------------------------------------------------
+
+
+RDS security practices in aws:
+----------------------------------------
+* Use VPCs: Use Amazon Virtual Private Cloud (VPC) to create a private network for your RDS instance. This helps prevent unauthorized access to your instance from the public internet.
+
+* Compliance standard is what your business requires
+
+* RDS Instances should only be in the AWS region that you are legally allowed to be holding user data in.
+
+* Amazon Organizations SCP to manage RDS deletion, RDS creation, region lock, RDS Encryption enforced etc
+
+* AWS CloudTrail is enabled & monitored to trigger alerts on malicious RDS behaviour by an identity in AWS.
+
+* Amazon Guardduty is enabled in the account and region of RDS.
+
+Amazon RDS - Security Best Practices – Application:
+---------------------------------------------------------------
+
+•RDS Instance to use appropriate Authentication -Use IAM authentication, kerberos etc (not the default)
+
+* Database User Lifecycle Management - Create, Modify, Delete Users
+
+* AWS User Access Lifecycle Management - Change of Roles/ Revoke Roles etc
+
+* Security Group to be restricted only to known IPs
+
+* Not have RDS be internet accessible
+
+* Encryption in Transit for comms between App & RDS
+
+* Secret Management: Master User passwords can be used with AWS Secrets Manager to automatically rotate the secrets for Amazon RDS.
+
+
+
+
+
+----------------------------------------------------------------------------------------------------------------------------------------
+
+
+Elastic Cloud Compute Security Best Practices:
+--------------------------------------------------------
+Amazon Elastic Compute Cloud (EC2) provides a variety of security features to help you secure your virtual servers and instances. Some of the key security considerations when using AWS EC2 include: 
+Security Groups:
+-------------------
+ Security Groups act as virtual firewalls for your instances, controlling inbound and outbound traffic. You can define rules to allow or deny specific types of traffic based on protocols, ports, and IP ranges.
+
+Network Access Control Lists (NACLs):
+------------------------------------------------------
+ NACLs operate at the subnet level and provide an additional layer of control over inbound and outbound traffic. They allow you to create rules that define what traffic is allowed or denied at the subnet level.
+
+Private Subnets:
+---------------------
+ EC2 instances placed in private subnets have no direct internet access. This increases security by reducing the exposure of instances to the public internet.
+
+Network Monitoring and Logging:
+------------------------------------------- 
+With Amazon VPC Flow Logs you can monitor and log network traffic to your instance, helping you detect and respond to suspicious activities.
+
+Elastic Network Interfaces (ENIs): 
+-----------------------------------------
+ENIs are virtual network interfaces in your instances. Each instance comes with a primary ENI and you can attach additional ENIs (Secondary ENIs). ENIs play a crucial role in defining the networking capabilities of an instance, and they can be a potential attack vector if not properly secured. 
+Misconfigured security groups or network access control lists (NACLs) can lead to unauthorized access to ENIs. Ensure that proper inbound and outbound rules are defined to restrict access to only the necessary ports and IP ranges. 
+The secondary ENIs can be detached and attached to another instance; this is typically done to handle instance failures and to redirect traffic to a new instance.
+
+Public Ips:
+---------------- 
+Public IPs are associated with instances that are directly accessible from the internet. Instances with public IPs can send and receive traffic from the internet. 
+Public IPs increase the attack surface as instances are exposed to the public internet. Proper security measures, including security groups and NACLs, are essential to control inbound and outbound traffic to these instances. 
+Public IPs are released when you stop a running instance. When you start the instance again, a new Public IP is assigned.
+
+Private IPs: 
+--------------
+Private IPs are assigned to instances and are used for communication within the VPC and with other resources connected to the VPC. Private IPs are not directly accessible from the internet, which enhances security by reducing external exposure. However, internal security controls like security groups and NACLs are still important to protect communication within the VPC.
+
+Elastic IPs (EIPs):
+------------------------- 
+EIPs are static, public IPv4 addresses that you can allocate and associate with your AWS resources. Unlike regular public IPs that are dynamically assigned to instances, EIPs remain associated with your account until you release them. If your instance interacts with external services, partners, or vendors that whitelist specific IP addresses, using an EIP ensures that those external entities don't need to update their whitelists when your stop-start your instances.
+
+Bastion Host:
+-----------------
+ A bastion host, is a special-purpose instance that is designed and configured to provide secure access to a private network, typically for administrative task. Administrators use the bastion host as a "jump host" to access other instances within the private network. This adds an extra layer of separation between the private network and external connections.
+
+Key Pairs: 
+-----------------
+When launching instances, you can use key pairs for SSH key authentication. This enhances security by requiring the use of a private key to log in, rather than relying solely on passwords. Some challenges with key pairs are they are long lived; accidental or malicious key pair leak can compromise security of your infrastructure; key pair rotation and distribution can be complex especially in an environment with hundreds of instances and employees. The recommended approach is to use EC2 instance connect or Session Manager
+
+AWS Systems Manager Session Manager:
+----------------------------------------------------- 
+Session Manager is a component of AWS Systems Manager that allows you to login to your EC2 instances without the need to open inbound ports or rely on SSH keys. It provides secure and auditable access to instances using IAM permissions and roles, enabling you to centrally manage user access, restrict permissions, and log all session activities. Session Manager eliminates the need for managing and rotating SSH keys, enhancing security by reducing the attack surface and minimizing the risk of unauthorized access. It also provides fine-grained control over who can access instances. Using Systems Manager VPC Endpoints, you can connect to private instances. This eliminates the need for Bastion Hosts.
+
+AWS EC2 Instance Connect: 
+-----------------------------------
+EC2 Instance Connect is a service that simplifies and secures the process of logging in to your EC2 instances using SSH. With EC2 Instance Connect, you can use the AWS Management Console, AWS Command Line Interface (CLI), AWS SDKs or your existing tools to establish secure SSH connections to your instances without requiring SSH keys. EC2 Instance Connect uses IAM user permission to push short lived SSH keys for temporary access. This approach reduces the risk associated with distributing and managing SSH key pairs.
+
+Using EC2 Instance Connect VPC Endpoints, you can connect to private instances. This eliminates the need for Bastion Hosts.
+
+Patch Management: 
+-----------------------------
+AWS Systems Manager provides the Patch Manager feature that helps you automate the process of patching your EC2 instances. With Patch Manager, you can define patch baselines, specify maintenance windows, and automate the deployment of security patches and updates to your instances. This ensures that your instances are up to date with the latest security patches, reducing vulnerabilities and potential attack vectors.
+
+
+At-rest Encryption:
+-------------------------
+ To protect sensitive data, you can enable EBS Volume Encryption to encrypt and store data at-rest. You can encrypt the root volume or any additional volumes attached to the instance. EBS encryption needs to be enabled when creating the volume. For existing un-encrypted volume, you 
+use EBS Snapshot and then enable encryption when restoring to a new volume or when copying the snapshot.
+
+Instance Metadata Service (IMDS):
+------------------------------------------
+ The Instance Metadata Service provides information about your instance's metadata. The IMDS service is accesible only from inside an instance at 169.254.169.254. However, vulnerabilities in your application code or other third party packages may allow unauthorized access to IMDS and compromise security of your infrastructure and data. 
+IMDSv2, or Instance Metadata Service version 2, is an enhanced version of the Instance Metadata Service (IMDS) provided by Amazon Web Services (AWS)
+IMDSv2 was introduced to address security concerns and vulnerabilities that existed in the original IMDS. IMDSv2 enhances the security of metadata retrieval by implementing stricter access controls and protections against potential attacks.
+
+Instance Roles:
+--------------------
+ EC2 instances can be assigned an IAM role, allowing them to securely access AWS services without requiring you to configure long-term access keys. This reduces the risk of exposing credentials within the instance.
+
+Instance Security Assessment:
+-------------------------------------- 
+Amazon Inspector can be used to assess the security of your instances by scanning for known software vulnerabilities, critical ports that are open to network access from internet and deviations from best practices.
+
+
+User Data:
+--------------
+EC2 user data is a feature that allows you to provide scripts or commands to be executed when an EC2 instance launches. These scripts can automate instance configuration, software installation, and other setup tasks. Avoid including sensitive information, such as passwords, API keys, or other credentials, in your user data scripts. User data scripts are visible to anyone with access to the instance metadata, including AWS Identity and Access Management (IAM) roles associated with the instance.
+
+
+
+Amazon Machine Images (AMIs):
+------------------------------------------- 
+AMIs allow you to create customized images of your instances, ensuring consistent configurations and security settings when launching new instances.
+
+ Source and Origin: When selecting AMIs, it's important to use official images provided by AWS or trusted vendors. Avoid using AMIs from unverified sources to minimize the risk of malicious or compromised images.
+
+ OS Choices: You have a choice of Linux distributions, Microsoft Windows and Free BSD (available in the marketplace). Amazon also has a distribution of Linux called Amazon Linux.
+
+Customization: If you create custom AMIs, follow security best practices during the customization process. Apply security configurations, install necessary security tools, and remove any unnecessary software or services. 
+
+To build your own AMI, start with one of the existing AMIs from Amazon or third parties. Install the required tools, harden the setup, and take an EBS volume Snapshot. Using the snapshot, you can create an AMI. 
+
+This AMI is available within your account, and you can share it with other accounts or even make it public. You can share encrypted AMI with other accounts only if you use the KMS customer-managed key for encryption.
+
+
+Golden Images: Consider creating "golden images" with predefined security settings and configurations. These images can include security software, logging agents, and other components that enhance the security of instances launched from them.
+
+
+Immutable Infrastructure: Adopt the concept of "immutable infrastructure" where instances are treated as disposable and are frequently replaced with new instances from updated AMIs. This approach minimizes the risk of configuration drift and ensures consistent security settings
+
+
+AWS Resource Access Manager (RAM):
+------------------------------------------------- 
+AWS RAM allows you to share resources across AWS accounts, including AMIs. With RAM, you can share AMIs with specific accounts or with all accounts in your AWS Organization.
+
+
+EC2 Image Builder:
+-------------------------- 
+With EC2 Image Builder, you can automate the process of creating, maintaining, and distributing custom Amazon Machine Images (AMIs). 
+
+EC2 Image Builder allows you to define a blueprint that specifies the desired software configuration and security settings for your instances. You can configure EC2 Image Builder to automatically include the latest security patches and updates when building new AMIs. This reduces the risk of launching instances with known vulnerabilities. 
+
+Automated Testing: EC2 Image Builder supports automated testing of your images using pre-built test frameworks. This can help identify security vulnerabilities, configuration errors, and compatibility issues.
+
+CloudWatch Logs:
+-------------------------- 
+With CloudWatch Logs, you can consolidate operating system and application logs and monitor them to detect and respond to suspicious activities. You can set up metrics filters to look for specific events and raise alarms.
+
+
+
